@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>IT-202 Big Project</title>
+  <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <style>
+    :root {
+      --mdc-theme-primary: Navy;
+    }
+
+    body {margin: 0;}
+    main {margin-left: 8px;}
+
+    .view {display: none;}
+      
+    #home {display: block}
+/*       #Search {display:block} */
+/*       #Tables {display:block} */
+/*       #Graph {display:block} */
+      
+  </style>
+
+  </head>
+  <body>        
+    <!-- Drawer -->
+    <aside class="mdc-drawer mdc-drawer--modal">
+    <div class="mdc-drawer__content">
+      <nav class="mdc-list">
+        <a class="mdc-list-item mdc-list-item--activated" href="#home" aria-current="page">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
+          <span class="mdc-list-item__text">Home</span>
+        </a>
+        <a class="mdc-list-item" href="#Search">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">search</i>
+          <span class="mdc-list-item__text">Countries</span>
+        </a>
+        <a class="mdc-list-item" href="#Tables">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bookmark</i>
+          <span class="mdc-list-item__text">Data Tables</span>
+        </a>
+        <a class="mdc-list-item" href="#Graph">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">trending_up</i>
+          <span class="mdc-list-item__text">Graph</span>
+        </a>
+      </nav>
+    </div>
+  </aside>
+      
+    </body>
+</html>
