@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>IT-202 Big Project</title>
+    <title>Project 4</title>
   <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
   <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
@@ -11,7 +11,7 @@
 
   <style>
     :root {
-      --mdc-theme-primary: Navy;
+      --mdc-theme-primary: green;
     }
 
     body {margin: 0;}
@@ -19,8 +19,7 @@
 
     .view {display: none;}
       
-    #home {display: block}
-/*       #Search {display:block} */
+      #Search {display:block}
 /*       #Tables {display:block} */
 /*       #Graph {display:block} */
       
@@ -32,13 +31,9 @@
     <aside class="mdc-drawer mdc-drawer--modal">
     <div class="mdc-drawer__content">
       <nav class="mdc-list">
-        <a class="mdc-list-item mdc-list-item--activated" href="#home" aria-current="page">
-          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">home</i>
-          <span class="mdc-list-item__text">Home</span>
-        </a>
-        <a class="mdc-list-item" href="#Search">
+        <a class="mdc-list-item mdc-list-item--activated" href="#Search" aria-current="page">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">search</i>
-          <span class="mdc-list-item__text">Countries</span>
+          <span class="mdc-list-item__text">Search</span>
         </a>
         <a class="mdc-list-item" href="#Tables">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bookmark</i>
@@ -51,6 +46,113 @@
       </nav>
     </div>
   </aside>
+  
+<!-- Top Bar-->
+  <div class="mdc-drawer-scrim"></div>
+<header class="mdc-top-app-bar">
+  <div class="mdc-top-app-bar__row">
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
+      <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
+      <span class="mdc-top-app-bar__title">Chicago Datasets</span>
+    </section>
+    <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar"></section>
+  </div>
+</header>
+
+
+<!-- Pages -->
+      <main class="mdc-top-app-bar--fixed-adjust">
+          
+<!--   1     -->
+    <div id="Search" class="view">
+        <h1>State Search</h1>
+        <p>Select a State from the list below.</p>
+    <form class='form' action="/action_page.php" method="get" name='country_form'>
+        <input id="stateText" list="datalist" type="text" placeholder="Type Here...">
+        <datalist id="datalist"></datalist>
+        <input id="appendCountry" onclick="appendToList()" type="button" href="#btn1" value="Add">
+        <input id="graphData" onclick="inputFilter(), graph()" type="button" href="#btn2" value="Graph!">
+        </form> 
+    <form action="/action_page.php">
+      <input type="checkbox" id="check1" name="check1" value="Confirmed">
+      <label for="check1">Confirmed</label><br>
+      <input type="checkbox" id="check2" name="check2" value="Deaths">
+      <label for="check2">Deaths</label><br>
+      <input type="checkbox" id="check3" name="check3" value="Recovered">
+        <label for="check3">Recovered</label><br><br></form>
+        
+        <p>States listed:</p>
+        <ol id="statesList"></ol>
+      </div>
       
-    </body>
+<!--   2     -->
+      <div id="Tables" class="view">
+        <h1>Data Tables</h1>
+<!--         <p>All selected countries will appear here:</p> -->
+          <table id='datatable' class='display' style="width:100%"></table>
+      </div>
+          
+<!--   3   -->
+    <div id="Graph" class="view">
+        <h1>Graph</h1>
+        <p>Graph of data per State selected.</p>
+        <div id="graph"></div>
+      </div>    
+      
+  <script>
+//       Top Bar / Drawer
+    mdc.topAppBar.MDCTopAppBar.attachTo(document.querySelector('header.mdc-top-app-bar'));
+
+    const drawer = mdc.drawer.MDCDrawer.attachTo(document.querySelector('.mdc-drawer'));
+
+    const hideViews = () => {
+      document.querySelectorAll("div.view").forEach( (item) => {
+        item.style.display = "none";
+      })
+    }
+
+
+    document.querySelector(".mdc-top-app-bar__navigation-icon")
+      .addEventListener("click", 
+          (e) => {drawer.open = true;}
+      );
+
+    document.querySelectorAll('aside.mdc-drawer a.mdc-list-item')
+      .forEach(item => {
+        item.addEventListener('click', event => {
+          
+          hideViews();
+          let target = item.getAttribute("href");
+          document.querySelector(target).style.display = "block";
+          drawer.open = false;
+        })
+    })
+      
+//      Datalist from json
+      let EndPoint = "https://covidtracking.com/api/v1/states/daily.json"
+      let stateData = [];
+      
+      
+      fetch(EndPoint)
+  .then((response) => {
+          return response.json();
+      })
+      .then((data) => {
+          Data = data
+       let Datalist = document.querySelector('datalist')
+       var x; 
+       var list = '';
+       for (x in data) {   
+           Datalist.innerHTML = list;
+//            console.log(Data[x])
+//            console.log(Data[x]["state"])
+       }
+      })
+      
+      
+      
+      
+          </script>
+      </main>
+  </body>
 </html>
