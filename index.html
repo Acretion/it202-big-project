@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>Project 4</title>
+    <title>IT-202 Big Project</title>
   <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
   <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
@@ -11,7 +11,7 @@
 
   <style>
     :root {
-      --mdc-theme-primary: green;
+      --mdc-theme-primary: blue;
     }
 
     body {margin: 0;}
@@ -43,6 +43,10 @@
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">trending_up</i>
           <span class="mdc-list-item__text">Graph</span>
         </a>
+        <a class="mdc-list-item" href="#History">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">book</i>
+          <span class="mdc-list-item__text">History</span>
+        </a>
       </nav>
     </div>
   </aside>
@@ -66,24 +70,26 @@
 <!--   1     -->
     <div id="Search" class="view">
         <h1>State Search</h1>
-        <p>Select a StateCode from the list below.</p>
+        <p>Select a State from the list of state codes below.</p>
     <form class='form' action="/action_page.php" method="get" name='country_form'>
         <input id="stateText" list="datalist" type="text" placeholder="Type Here...">
         <datalist id="datalist"></datalist>
         <input id="appendCountry" onclick="appendList()" type="button" href="#btn1" value="Add">
-        <input id="graphData" onclick="  " type="button" href="#btn2" value="Graph!">
-     </form> 
         
-    <form action="/action_page.php">
+    <br>
+    <p>Check off the boxes of data you want to see!</p>
+
           <input type="checkbox" id="check1" name="check1" value="Confirmed">
           <label for="check1">Confirmed</label><br>
           <input type="checkbox" id="check2" name="check2" value="Deaths">
           <label for="check2">Deaths</label><br>
           <input type="checkbox" id="check3" name="check3" value="Recovered">
           <label for="check3">Recovered</label><br><br>
+        <input id="graphData" onclick="  " type="button" href="#btn2" value="Graph!">
       </form>
         
-        <p>State Codes listed:</p>
+        <br>
+        <h3>Inputted State codes:</h3>
         <ol id="statesList"></ol>
       </div>
       
@@ -99,7 +105,13 @@
         <h1>Graph</h1>
         <p>Graph of data per State selected.</p>
         <div id="graph"></div>
-      </div>    
+      </div>  
+          
+<!--   4   -->
+    <div id="History" class="view">
+        <h1>Previous Searches</h1>
+        <ol id='history'></ol>
+    </div> 
       
   <script>
 //       Top Bar / Drawer
