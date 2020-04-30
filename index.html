@@ -53,7 +53,7 @@
   <div class="mdc-top-app-bar__row">
     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-start">
       <button class="material-icons mdc-top-app-bar__navigation-icon mdc-icon-button">menu</button>
-      <span class="mdc-top-app-bar__title">Chicago Datasets</span>
+      <span class="mdc-top-app-bar__title">State Covid Datasets</span>
     </section>
     <section class="mdc-top-app-bar__section mdc-top-app-bar__section--align-end" role="toolbar"></section>
   </div>
@@ -66,22 +66,24 @@
 <!--   1     -->
     <div id="Search" class="view">
         <h1>State Search</h1>
-        <p>Select a State from the list below.</p>
+        <p>Select a StateCode from the list below.</p>
     <form class='form' action="/action_page.php" method="get" name='country_form'>
         <input id="stateText" list="datalist" type="text" placeholder="Type Here...">
         <datalist id="datalist"></datalist>
-        <input id="appendCountry" onclick="appendToList()" type="button" href="#btn1" value="Add">
-        <input id="graphData" onclick="inputFilter(), graph()" type="button" href="#btn2" value="Graph!">
-        </form> 
-    <form action="/action_page.php">
-      <input type="checkbox" id="check1" name="check1" value="Confirmed">
-      <label for="check1">Confirmed</label><br>
-      <input type="checkbox" id="check2" name="check2" value="Deaths">
-      <label for="check2">Deaths</label><br>
-      <input type="checkbox" id="check3" name="check3" value="Recovered">
-        <label for="check3">Recovered</label><br><br></form>
+        <input id="appendCountry" onclick="appendList()" type="button" href="#btn1" value="Add">
+        <input id="graphData" onclick="  " type="button" href="#btn2" value="Graph!">
+     </form> 
         
-        <p>States listed:</p>
+    <form action="/action_page.php">
+          <input type="checkbox" id="check1" name="check1" value="Confirmed">
+          <label for="check1">Confirmed</label><br>
+          <input type="checkbox" id="check2" name="check2" value="Deaths">
+          <label for="check2">Deaths</label><br>
+          <input type="checkbox" id="check3" name="check3" value="Recovered">
+          <label for="check3">Recovered</label><br><br>
+      </form>
+        
+        <p>State Codes listed:</p>
         <ol id="statesList"></ol>
       </div>
       
@@ -138,17 +140,39 @@
           return response.json();
       })
       .then((data) => {
-          Data = data
+          stateData = data
        let Datalist = document.querySelector('datalist')
-       var x; 
+       var x;
+       var i = 0;
        var list = '';
-       for (x in data) {   
-           Datalist.innerHTML = list;
-//            console.log(Data[x])
-//            console.log(Data[x]["state"])
-       }
-      })
+       if (i < 55) {
+           for (x in data) {
+               Datalist.innerHTML = list;
+               list += '<option value="' + data[x]['state'] + '"/>';
+               i = i + 1;
+               console.log(i)
+               if (i > 56){
+                   break
+               }
+       }}
+      }
+            )
       
+      
+
+//       Append State Data   
+      let filter = []; 
+           
+      async function appendToList(apiEndpoint) {
+          let addState = document.getElementById('countryText');
+          var node = document.createElement("LI")
+          var textnode = document.createTextNode(addCountry.value);       
+          node.appendChild(textnode); 
+          document.getElementById("countryList").appendChild(node);
+             filter.push(addState.value)    
+//              console.log(filter)
+//              console.log(countryData)
+             }   
       
       
       
