@@ -148,28 +148,23 @@
          for (x in data) {
                Datalist.innerHTML = list;
                list += '<option value="' + data[x]['state'] + '"/>';
+             
                i = i + 1;
-               console.log(i)
                if (i > 56){
                    break
                }
-       }}
-            )
-      
-      
+         }})
 
-//       Append State Data   
+//    Text List under InputText
       let filter = []; 
            
-      async function appendToList(apiEndpoint) {
-          let addState = document.getElementById('countryText');
+       function appendList() {
+          let addState = document.getElementById('stateText');
           var node = document.createElement("LI")
-          var textnode = document.createTextNode(addCountry.value);       
+          var textnode = document.createTextNode(addState.value);       
           node.appendChild(textnode); 
-          document.getElementById("countryList").appendChild(node);
+          document.getElementById("statesList").appendChild(node);
              filter.push(addState.value)    
-//              console.log(filter)
-//              console.log(countryData)
              }   
       
       
