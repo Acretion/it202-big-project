@@ -6,6 +6,7 @@
     <title>IT-202 Big Project</title>
   <link href="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.css" rel="stylesheet">
   <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
@@ -71,21 +72,22 @@
     <div id="Search" class="view">
         <h1>State Search</h1>
         <p>Select a State from the list of state codes below.</p>
-    <form class='form' action="/action_page.php" method="get" name='country_form'>
-        <input id="stateText" list="datalist" type="text" placeholder="Type Here...">
+        
+    <form class='form' action="/action_page.php" method="get" name='State_form'>
+        <input id="stateText" list="datalist" type="text" placeholder="Select Here...">
         <datalist id="datalist"></datalist>
-        <input id="appendCountry" onclick="appendList()" type="button" href="#btn1" value="Add">
+        <input id="appendState" onclick="appendList()" type="button" href="#btn1" value="Add">
         
     <br>
     <p>Check off the boxes of data you want to see!</p>
 
-          <input type="checkbox" id="check1" name="check1" value="Confirmed">
+          <input type="checkbox" id="check1" name="check" value="Confirmed">
           <label for="check1">Confirmed</label><br>
-          <input type="checkbox" id="check2" name="check2" value="Deaths">
+          <input type="checkbox" id="check2" name="check" value="Deaths">
           <label for="check2">Deaths</label><br>
-          <input type="checkbox" id="check3" name="check3" value="Recovered">
+          <input type="checkbox" id="check3" name="check" value="Recovered">
           <label for="check3">Recovered</label><br><br>
-        <input id="graphData" onclick="  " type="button" href="#btn2" value="Graph!">
+          <button type="button">Graph!</button>
       </form>
         
         <br>
@@ -176,9 +178,39 @@
           var textnode = document.createTextNode(addState.value);       
           node.appendChild(textnode); 
           document.getElementById("statesList").appendChild(node);
-             filter.push(addState.value)    
+          filter.push(addState.value)
              }   
       
+// Extract Checkbox Data
+      $(document).ready(function() {
+          $('button').click(function(){
+              var checked = [];
+              $.each($("input[name='check']:checked"), function(){
+                  checked.push($(this).val());
+              });
+//               console.log(checked.join(", "));
+          })
+      })
+      
+// Extracting Data from JSON
+
+
+
+      
+// IndexDB for History Tab
+//       let request = indexedDB.open("State Database", 1),
+//           db,
+//           confirmed,
+//           death,
+//           recovered,
+//           index;
+     
+//       request.onsuccess = function(e) {
+//           db = request.result;
+//           confirmed = db.transaction("Confirmed", "readwrite");  
+//           death = db.transaction("Deaths", "readwrite");
+//           recov
+//       }
       
       
           </script>
