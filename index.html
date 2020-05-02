@@ -12,7 +12,7 @@
 
   <style>
     :root {
-      --mdc-theme-primary: blue;
+      --mdc-theme-primary: #56a7f1;
     }
 
     body {margin: 0;}
@@ -21,8 +21,7 @@
     .view {display: none;}
       
       #Search {display:block}
-/*       #Tables {display:block} */
-/*       #Graph {display:block} */
+/*       #Graph {display:block} */     
       
   </style>
 
@@ -35,10 +34,6 @@
         <a class="mdc-list-item mdc-list-item--activated" href="#Search" aria-current="page">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">search</i>
           <span class="mdc-list-item__text">Search</span>
-        </a>
-        <a class="mdc-list-item" href="#Tables">
-          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">bookmark</i>
-          <span class="mdc-list-item__text">Data Tables</span>
         </a>
         <a class="mdc-list-item" href="#Graph">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">trending_up</i>
@@ -79,15 +74,15 @@
         <input id="appendState" onclick="appendList()" type="button" href="#btn1" value="Add">
         
     <br>
-    <p>Check off the boxes of data you want to see!</p>
+    <p>Check off the data you want to see!</p>
 
-          <input type="checkbox" id="check1" name="check" value="Confirmed">
+          <input type="radio" id="check1" name="radio" value="Confirmed">
           <label for="check1">Confirmed</label><br>
-          <input type="checkbox" id="check2" name="check" value="Deaths">
+          <input type="radio" id="check2" name="radio" value="Deaths">
           <label for="check2">Deaths</label><br>
-          <input type="checkbox" id="check3" name="check" value="Recovered">
+          <input type="radio" id="check3" name="radio" value="Recovered">
           <label for="check3">Recovered</label><br><br>
-          <button type="button">Graph!</button>
+          <button type="button" id='graph' onclick='extract(), bargraph()'>Graph!</button>
       </form>
         
         <br>
@@ -95,21 +90,15 @@
         <ol id="statesList"></ol>
       </div>
       
-<!--   2     -->
-      <div id="Tables" class="view">
-        <h1>Data Tables</h1>
-<!--         <p>All selected countries will appear here:</p> -->
-          <table id='datatable' class='display' style="width:100%"></table>
-      </div>
           
-<!--   3   -->
+<!--   2   -->
     <div id="Graph" class="view">
         <h1>Graph</h1>
-        <p>Graph of data per State selected.</p>
-        <div id="graph"></div>
+        <p>Extracted Data from the 7 days</p>
+        <canvas id="myChart"></canvas>
       </div>  
           
-<!--   4   -->
+<!--   3   -->
     <div id="History" class="view">
         <h1>Previous Searches</h1>
         <ol id='history'></ol>
@@ -146,7 +135,7 @@
       
 //      Datalist from json
       let EndPoint = "https://covidtracking.com/api/v1/states/daily.json"
-      let stateData = [];
+      let array = [];
       
       
       fetch(EndPoint)
@@ -154,22 +143,21 @@
           return response.json();
       })
       .then((data) => {
-          stateData = data
+          array = data
        let Datalist = document.querySelector('datalist')
        var x;
        var i = 0;
        var list = '';
-         for (x in data) {
+          for (x in data) {
                Datalist.innerHTML = list;
                list += '<option value="' + data[x]['state'] + '"/>';
-             
                i = i + 1;
                if (i > 56){
                    break
                }
          }})
-
-//    Text List under InputText
+      
+//    Text List under Input
       let filter = []; 
            
        function appendList() {
@@ -181,22 +169,86 @@
           filter.push(addState.value)
              }   
       
-// Extract Checkbox Data
+// Graph Button
+     let checked = [];
       $(document).ready(function() {
-          $('button').click(function(){
-              var checked = [];
-              $.each($("input[name='check']:checked"), function(){
+          $('#graph').click(function(){
+              $.each($("input[name='radio']:checked"), function(){
                   checked.push($(this).val());
+                  
+                  hideViews();
+                  document.querySelector('#Graph').style.display = "block";
+                  drawer.open = false;
               });
-//               console.log(checked.join(", "));
           })
       })
+
+// Extract
+
+    let dates = [];
+    let inputx = [];
       
-// Extracting Data from JSON
-
-
-
+    function extract() {
+        let x = 0;
+        for (i in array) {
+            if (filter == array[i]['state']) {
+                dates.push(array[i]['dateChecked'])
+                inputx.push(array[i][checked])
+//                 console.log(dates)
+                console.log(checked)
+                console.log(inputx)
+                x = x + 1
+                if (x > 6) {
+                    break
+                }
+            }
+        }
+    }
       
+      
+// Graph
+function bargraph() {
+var ctx = document.getElementById('myChart').getContext('2d');
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: dates,
+        datasets: [{
+            label: 'color',
+            data: [2,2,2,2,2,2,2,2,2,2,2,2],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true
+                }
+            }]
+        }
+    }
+});
+}
+      
+// SECTION 2
+         
 // IndexDB for History Tab
 //       let request = indexedDB.open("State Database", 1),
 //           db,
