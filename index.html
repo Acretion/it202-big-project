@@ -24,9 +24,9 @@
 /*       #Graph {display:block} */     
       
   </style>
-
   </head>
-  <body>        
+    
+  <body>     
     <!-- Drawer -->
     <aside class="mdc-drawer mdc-drawer--modal">
     <div class="mdc-drawer__content">
@@ -76,11 +76,11 @@
     <br>
     <p>Check off the data you want to see!</p>
 
-          <input type="radio" id="check1" name="radio" value="Confirmed">
-          <label for="check1">Confirmed</label><br>
-          <input type="radio" id="check2" name="radio" value="Deaths">
-          <label for="check2">Deaths</label><br>
-          <input type="radio" id="check3" name="radio" value="Recovered">
+          <input type="radio" id="check1" name="radio" value="positive">
+          <label for="check1">Positive</label><br>
+          <input type="radio" id="check2" name="radio" value="negative">
+          <label for="check2">Negative</label><br>
+          <input type="radio" id="check3" name="radio" value="recovered">
           <label for="check3">Recovered</label><br><br>
           <button type="button" id='graph' onclick='extract(), bargraph()'>Graph!</button>
       </form>
@@ -167,36 +167,28 @@
           node.appendChild(textnode); 
           document.getElementById("statesList").appendChild(node);
           filter.push(addState.value)
-             }   
+             }        
+
+// Extract data
+    let dates = [];
+    let inputx = [];
+    let radioCheck = [];
       
-// Graph Button
-     let checked = [];
-      $(document).ready(function() {
-          $('#graph').click(function(){
+    function extract() {
+        let x = 0;
               $.each($("input[name='radio']:checked"), function(){
-                  checked.push($(this).val());
+                  radioCheck.push($(this).val());
                   
                   hideViews();
                   document.querySelector('#Graph').style.display = "block";
                   drawer.open = false;
               });
-          })
-      })
 
-// Extract
-
-    let dates = [];
-    let inputx = [];
-      
-    function extract() {
-        let x = 0;
         for (i in array) {
             if (filter == array[i]['state']) {
                 dates.push(array[i]['dateChecked'])
-                inputx.push(array[i][checked])
-//                 console.log(dates)
-                console.log(checked)
-                console.log(inputx)
+                inputx.push(array[i][radioCheck])
+
                 x = x + 1
                 if (x > 6) {
                     break
@@ -215,7 +207,7 @@ var myChart = new Chart(ctx, {
         labels: dates,
         datasets: [{
             label: 'color',
-            data: [2,2,2,2,2,2,2,2,2,2,2,2],
+            data: inputx,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
