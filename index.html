@@ -101,7 +101,9 @@
 <!--   3   -->
     <div id="History" class="view">
         <h1>Previous Searches</h1>
-        <ol id='history'></ol>
+        <p>Use the button below to check previous Data Searches.</p>
+        <button type="button" id='history' onclick='getStates()'>History</button>
+        <div id="status2"></div>
     </div> 
       
   <script>
@@ -264,13 +266,13 @@ document.addEventListener("DOMContentLoaded", function() {
     //No support
     if(!indexedDBOk) return;
  
-    var openRequest = indexedDB.open("idarticle_people",1);
+    var openRequest = indexedDB.open("States Search History",1);
  
     openRequest.onupgradeneeded = function(e) {
         var thisDB = e.target.result;
  
         if(!thisDB.objectStoreNames.contains("states")) {
-            thisDB.createObjectStore("states");
+            thisDB.createObjectStore("states", {autoIncrement: true});
         }
     }
  
@@ -299,12 +301,12 @@ function addState(e) {
  
     //Define a person
     var state = {
-        name:name,
-        created:new Date()
+        State: name,
+        Searched: new Date()
     }
  
     //Perform the add
-    var request = store.add(state,1);
+    var request = store.add(state);
     request.onerror = function(e) {
         console.log("Error",e.target.error.name);
     }
@@ -312,6 +314,23 @@ function addState(e) {
         console.log("Success");
     }
 }      
+      
+function getStates(e) {
+	var s = "";
+
+	db.transaction(["states"], "readonly").objectStore("states").openCursor().onsuccess = function(e) {
+		var cursor = e.target.result;
+		if(cursor) {
+			s += "<h2>Key "+cursor.key+"</h2><p>";
+			for(var field in cursor.value) {
+				s+= field+"="+cursor.value[field]+"<br/>";
+			}
+			s+="</p>";
+			cursor.continue();
+		}
+		document.querySelector("#status2").innerHTML = s;
+	}
+}
       
           </script>
       </main>
