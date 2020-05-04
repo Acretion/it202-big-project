@@ -94,7 +94,7 @@
 <!--   2   -->
     <div id="Graph" class="view">
         <h1>Graph</h1>
-        <p>Extracted Data from the 7 days</p>
+        <p>Data from the last 7 days</p>
         <canvas id="myChart"></canvas>
       </div>  
           
@@ -185,16 +185,27 @@
               });
 
         for (i in array) {
-            if (filter == array[i]['state']) {
-                dates.push(array[i]['dateChecked'])
-                inputx.push(array[i][radioCheck])
-
-                x = x + 1
+            if (filter[0] == array[i]['state']) {
+                dates.push(array[i]['dateChecked']) 
+                
+                x++
                 if (x > 6) {
                     break
                 }
             }
         }
+            for (h = 0; h < filter.length; h++) {
+                console.log(h)
+                for (i in array) {
+                    if (filter[h] == array[i]['state']) {
+                        console.log(filter[h])
+                    }
+                }
+            }
+              
+//         console.log(dates)
+//         console.log(inputx)
+//         console.log(radioCheck)
     }
       
       
@@ -206,7 +217,7 @@ var myChart = new Chart(ctx, {
     data: {
         labels: dates,
         datasets: [{
-            label: 'color',
+            label: filter,
             data: inputx,
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -242,20 +253,65 @@ var myChart = new Chart(ctx, {
 // SECTION 2
          
 // IndexDB for History Tab
-//       let request = indexedDB.open("State Database", 1),
-//           db,
-//           confirmed,
-//           death,
-//           recovered,
-//           index;
-     
-//       request.onsuccess = function(e) {
-//           db = request.result;
-//           confirmed = db.transaction("Confirmed", "readwrite");  
-//           death = db.transaction("Deaths", "readwrite");
-//           recov
-//       }
-      
+var db;
+ 
+function indexedDBOk() {
+    return "indexedDB" in window;
+}
+ 
+document.addEventListener("DOMContentLoaded", function() {
+ 
+    //No support
+    if(!indexedDBOk) return;
+ 
+    var openRequest = indexedDB.open("idarticle_people",1);
+ 
+    openRequest.onupgradeneeded = function(e) {
+        var thisDB = e.target.result;
+ 
+        if(!thisDB.objectStoreNames.contains("states")) {
+            thisDB.createObjectStore("states");
+        }
+    }
+ 
+    openRequest.onsuccess = function(e) {
+        console.log("running onsuccess");
+ 
+        db = e.target.result;
+ 
+        //Listen for add clicks
+        document.querySelector("#appendState").addEventListener("click", addState, false);
+    }
+ 
+    openRequest.onerror = function(e) {
+        //Do something for the error
+    }
+ 
+},false);
+ 
+function addState(e) {
+    var name = document.querySelector("#stateText").value;
+ 
+    console.log("About to add "+name);
+ 
+    var transaction = db.transaction(["states"],"readwrite");
+    var store = transaction.objectStore("states");
+ 
+    //Define a person
+    var state = {
+        name:name,
+        created:new Date()
+    }
+ 
+    //Perform the add
+    var request = store.add(state,1);
+    request.onerror = function(e) {
+        console.log("Error",e.target.error.name);
+    }
+    request.onsuccess = function(e) {
+        console.log("Success");
+    }
+}      
       
           </script>
       </main>
