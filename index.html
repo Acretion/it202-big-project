@@ -8,6 +8,7 @@
   <script src="https://unpkg.com/material-components-web@v4.0.0/dist/material-components-web.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
   <style>
@@ -21,7 +22,8 @@
     .view {display: none;}
       
       #Search {display:block}
-/*       #Graph {display:block} */     
+/*       #Graph {display:block} */ 
+/*       #Weather {display:block} */
       
   </style>
   </head>
@@ -42,6 +44,10 @@
         <a class="mdc-list-item" href="#History">
           <i class="material-icons mdc-list-item__graphic" aria-hidden="true">book</i>
           <span class="mdc-list-item__text">History</span>
+        </a>
+        <a class="mdc-list-item" href="#Weather">
+          <i class="material-icons mdc-list-item__graphic" aria-hidden="true">cloud</i>
+          <span class="mdc-list-item__text">Weather</span>
         </a>
       </nav>
     </div>
@@ -66,7 +72,7 @@
 <!--   1     -->
     <div id="Search" class="view">
         <h1>State Search</h1>
-        <p>Select a State from the list of state codes below.</p>
+        <p>Select 1 State from the list of state codes below.</p>
         
     <form class='form' action="/action_page.php" method="get" name='State_form'>
         <input id="stateText" list="datalist" type="text" placeholder="Select Here...">
@@ -80,13 +86,13 @@
           <label for="check1">Positive</label><br>
           <input type="radio" id="check2" name="radio" value="negative">
           <label for="check2">Negative</label><br>
-          <input type="radio" id="check3" name="radio" value="recovered">
-          <label for="check3">Recovered</label><br><br>
+          <input type="radio" id="check3" name="radio" value="death">
+          <label for="check2">Deaths</label><br>
           <button type="button" id='graph' onclick='extract(), bargraph()'>Graph!</button>
       </form>
         
         <br>
-        <h3>Inputted State codes:</h3>
+        <h3>Inputted State:</h3>
         <ol id="statesList"></ol>
       </div>
       
@@ -104,6 +110,15 @@
         <p>Use the button below to check previous Data Searches.</p>
         <button type="button" id='history' onclick='getStates()'>History</button>
         <div id="status2"></div>
+    </div> 
+          
+<!--   4   -->
+    <div id="Weather" class="view">
+        <h1>Current Weather</h1>
+        <p>This page displays the current user's weather data</p>
+        <h1><div id="temp"></div>
+        <div id="minutely"></div></h1>
+        <h2><div id="location"></div></h2>
     </div> 
       
   <script>
@@ -175,9 +190,9 @@
     let dates = [];
     let inputx = [];
     let radioCheck = [];
+    let i = 0;
       
     function extract() {
-        let x = 0;
               $.each($("input[name='radio']:checked"), function(){
                   radioCheck.push($(this).val());
                   
@@ -186,26 +201,20 @@
                   drawer.open = false;
               });
 
-        for (i in array) {
-            if (filter[0] == array[i]['state']) {
-                dates.push(array[i]['dateChecked']) 
+        for (x in array) {
+            if (filter == array[x]['state']) {
+                dates.push(array[x]['dateChecked']) 
+                inputx.push(array[x][radioCheck])
                 
-                x++
-                if (x > 6) {
+                i++
+                if (i > 6) {
                     break
                 }
             }
-        }
-            for (h = 0; h < filter.length; h++) {
-                console.log(h)
-                for (i in array) {
-                    if (filter[h] == array[i]['state']) {
-                        console.log(filter[h])
-                    }
-                }
-            }
-              
+        }              
+        
 //         console.log(dates)
+//         console.log(filter)
 //         console.log(inputx)
 //         console.log(radioCheck)
     }
@@ -282,7 +291,7 @@ document.addEventListener("DOMContentLoaded", function() {
         db = e.target.result;
  
         //Listen for add clicks
-        document.querySelector("#appendState").addEventListener("click", addState, false);
+        document.querySelector("#graph").addEventListener("click", addState, false);
     }
  
     openRequest.onerror = function(e) {
@@ -292,10 +301,7 @@ document.addEventListener("DOMContentLoaded", function() {
 },false);
  
 function addState(e) {
-    var name = document.querySelector("#stateText").value;
- 
-    console.log("About to add "+name);
- 
+    var name = document.querySelector("#stateText").value; 
     var transaction = db.transaction(["states"],"readwrite");
     var store = transaction.objectStore("states");
  
@@ -331,6 +337,40 @@ function getStates(e) {
 		document.querySelector("#status2").innerHTML = s;
 	}
 }
+      
+//       Weather using GEOLOCATION with help from online Resources
+      
+  function weather() {
+  var location = document.getElementById("location");
+  var apiKey = "da0b28fbd89f9efd72b9fca3cc7094c1";
+  var url = "https://api.openweathermap.org/";
+
+  navigator.geolocation.getCurrentPosition(success, error);
+
+  function success(position) {
+    latitude = position.coords.latitude;
+    longitude = position.coords.longitude;
+
+    location.innerHTML =
+      "Latitude is " + latitude + "° Longitude is " + longitude + "°";
+
+    $.getJSON(
+      url + apiKey + "/" + latitude + "," + longitude + "?callback=?",
+      function(data) {
+        $("#temp").html(data.currently.temperature + "° F");
+        $("#minutely").html(data.minutely.summary);
+      }
+    );
+  }
+
+  function error() {
+    location.innerHTML = "Error";
+  }
+
+  location.innerHTML = "Locating...";
+}
+
+weather();
       
           </script>
       </main>
